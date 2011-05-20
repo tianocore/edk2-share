@@ -1,0 +1,36 @@
+
+
+This file (freeze_steps.txt) provid the steps to follow for generating the executable binary
+of the Package Documentation Generation Tool:
+
+a)	Use svn or tortoise svn to get the Package Document Tool source code from:
+
+	https://edk2share.svn.sourceforge.net/svnroot/edk2share/trunk/Tools/PackageDocumentionTool
+	
+	and place it into a local directory, for example: n:\doxygentools
+	
+b)	Download and install python 2.5.4 from http://www.python.org/download/, 
+        for example: c:\python25 in windows
+
+c)	Download and install wxPython 2.8.9.2 from http://www.wxPython.org/ , 
+        generally the libraries will be installed at python’s subfolder;
+        for example: c:\python25\lib\site-packages\wx
+        
+d)	Install python freeze 4.0.1 tools from http://sourceforge.net/project/showfiles.php?group_id=84937,
+        generally the libraries will be installed at python’s subfolder;
+        for example: c:\python25\lib\site-packages\cx_Freeze, 
+        
+e)	Open a command line window 
+
+f)	Enter source folder, for example: cd n:\doxygentools\src
+
+g)	Set environment variable PYTHONFREEZE_PATH to python’s script folder, 
+        for example: set PYTHONFREEZE_PATH=c:\python25\scripts\
+        
+h)	Run freeze.bat under n:\doxygentools\src
+
+i)	The freeze binary will be put into n:\doxygentools\bin
+
+j)	Goto n:\doxygentools\bin and double click packagedocapp.exe (this is the executable binary
+        of the Package Documentation Generation tool.
+
