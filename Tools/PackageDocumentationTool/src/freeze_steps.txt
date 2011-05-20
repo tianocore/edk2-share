@@ -5,7 +5,7 @@ of the Package Documentation Generation Tool:
 
 a)	Use svn or tortoise svn to get the Package Document Tool source code from:
 
-	https://edk2share.svn.sourceforge.net/svnroot/edk2share/trunk/Tools/PackageDocumentionTool
+	https://edk2share.svn.sourceforge.net/svnroot/edk2share/trunk/Tools/
 	
 	and place it into a local directory, for example: n:\doxygentools
 	
