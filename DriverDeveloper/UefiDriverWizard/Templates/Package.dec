@@ -1,0 +1,43 @@
+<<BEGIN>><<SKIP>>
+## @file
+#
+# UEFI Driver Wizard template file
+#
+# Copyright (c) 2012, Intel Corporation. All rights reserved.<BR>
+#
+# This program and the accompanying materials are licensed and made 
+# available under the terms and conditions of the BSD License which 
+# accompanies this distribution.  The full text of the license may 
+# be found at http://opensource.org/licenses/bsd-license.php.
+#
+# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" 
+# BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER 
+# EXPRESS OR IMPLIED.
+#
+##
+<<END>>
+## @file
+#  <<BriefDescription>>
+#  
+#  <<DetailedDescription>>
+#
+#  <<Copyright>>
+#  
+#  <<License>>
+#  
+##
+
+[Defines]
+  DEC_SPECIFICATION = 0x00010005
+  PACKAGE_NAME      = <<PackageName>>
+  PACKAGE_GUID      = <<GUID_REGISTRY_FORMAT>>
+  PACKAGE_VERSION   = <<PackageVersionString>>
+
+[Includes]
+  Include
+
+[LibraryClasses]
+
+[Protocols]
+
+[Guids]

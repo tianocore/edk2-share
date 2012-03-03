@@ -1,0 +1,254 @@
+<<BEGIN>><<SKIP>>
+## @file
+#
+# UEFI Driver Wizard template file
+#
+# Copyright (c) 2012, Intel Corporation. All rights reserved.<BR>
+#
+# This program and the accompanying materials are licensed and made 
+# available under the terms and conditions of the BSD License which 
+# accompanies this distribution.  The full text of the license may 
+# be found at http://opensource.org/licenses/bsd-license.php.
+#
+# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" 
+# BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER 
+# EXPRESS OR IMPLIED.
+#
+##
+<<END>>
+## @file
+#  <<BriefDescription>>
+#  
+#  <<DetailedDescription>>
+#
+#  <<Copyright>>
+#  
+#  <<License>>
+#  
+##
+
+[Defines]
+  INF_VERSION               = 0x00010005
+  BASE_NAME                 = <<DriverName>>
+  FILE_GUID                 = <<GUID_REGISTRY_FORMAT>>
+<<BEGIN>>  <<UefiBootServiceDriverEnabled>>MODULE_TYPE               = UEFI_DRIVER
+<<END>>
+<<BEGIN>>  <<UefiRuntimeDriverEnabled>>MODULE_TYPE               = DXE_RUNTIME_DRIVER
+<<END>>
+  VERSION_STRING            = <<DriverVersionString>>
+  ENTRY_POINT               = <<DriverName>>DriverEntryPoint
+<<BEGIN>>  <<UnloadEnabled>>UNLOAD_IMAGE              = <<DriverName>>Unload
+<<END>>
+<<BEGIN>>  <<HiiEnabled>>UEFI_HII_RESOURCE_SECTION = TRUE
+<<END>>
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[Sources]
+  <<DriverName>>.h
+  <<DriverName>>.c
+<<BEGIN>>  <<ComponentNameEnabled>>ComponentName.c
+<<END>>
+<<BEGIN>>  <<ComponentNameEnabled>>ComponentName.h
+<<END>>
+<<BEGIN>>  <<DriverDiagnosticsEnabled>>DriverDiagnostics.c
+<<END>>
+<<BEGIN>>  <<DriverDiagnosticsEnabled>>DriverDiagnostics.h
+<<END>>
+<<BEGIN>>  <<DriverConfigurationEnabled>>DriverConfiguration.c
+<<END>>
+<<BEGIN>>  <<DriverConfigurationEnabled>>DriverConfiguration.h
+<<END>>
+<<BEGIN>>  <<DriverFamilyOverrideEnabled>>DriverFamilyOverride.c
+<<END>>
+<<BEGIN>>  <<DriverFamilyOverrideEnabled>>DriverFamilyOverride.h
+<<END>>
+<<BEGIN>>  <<DriverHealthEnabled>>DriverHealth.c
+<<END>>
+<<BEGIN>>  <<DriverHealthEnabled>>DriverHealth.h
+<<END>>
+<<BEGIN>>  <<BusSpecificDriverOverrideEnabled>>BusSpecificDriverOverride.c
+<<END>>
+<<BEGIN>>  <<BusSpecificDriverOverrideEnabled>>BusSpecificDriverOverride.h
+<<END>>
+<<BEGIN>>  <<HiiEnabled>><<DriverName>>.uni
+<<END>>
+<<BEGIN>>  <<HiiConfigAccessEnabled>><<DriverName>>.vfr
+<<END>>
+<<BEGIN>>  <<HiiConfigAccessEnabled>>HiiConfigAccess.c
+<<END>>
+<<BEGIN>>  <<HiiConfigAccessEnabled>>HiiConfigAccess.h
+<<END>>
+<<BEGIN>>  <<SimpleTextInputEnabled>>SimpleTextInput.c
+<<END>>
+<<BEGIN>>  <<SimpleTextInputEnabled>>SimpleTextInput.h
+<<END>>
+<<BEGIN>>  <<SimplePointerEnabled>>SimplePointer.c
+<<END>>
+<<BEGIN>>  <<SimplePointerEnabled>>SimplePointer.h
+<<END>>
+<<BEGIN>>  <<AbsolutePointerEnabled>>AbsolutePointer.c
+<<END>>
+<<BEGIN>>  <<AbsolutePointerEnabled>>AbsolutePointer.h
+<<END>>
+<<BEGIN>>  <<SimpleTextOutputEnabled>>SimpleTextOutput.c
+<<END>>
+<<BEGIN>>  <<SimpleTextOutputEnabled>>SimpleTextOutput.h
+<<END>>
+<<BEGIN>>  <<SerialIoEnabled>>SerialIo.c
+<<END>>
+<<BEGIN>>  <<SerialIoEnabled>>SerialIo.h
+<<END>>
+<<BEGIN>>  <<GraphicsOutputEnabled>>GraphicsOutput.c
+<<END>>
+<<BEGIN>>  <<GraphicsOutputEnabled>>GraphicsOutput.h
+<<END>>
+<<BEGIN>>  <<BlockIoEnabled>>BlockIo.c
+<<END>>
+<<BEGIN>>  <<BlockIoEnabled>>BlockIo.h
+<<END>>
+<<BEGIN>>  <<StorageSecurityCommandEnabled>>StorageSecurityCommand.c
+<<END>>
+<<BEGIN>>  <<StorageSecurityCommandEnabled>>StorageSecurityCommand.h
+<<END>>
+<<BEGIN>>  <<NiiUndiEnabled>>NiiUndi.c
+<<END>>
+<<BEGIN>>  <<SimpleNetworkEnabled>>SimpleNetwork.c
+<<END>>
+<<BEGIN>>  <<SimpleNetworkEnabled>>SimpleNetwork.h
+<<END>>
+<<BEGIN>>  <<Usb2HostControllerEnabled>>Usb2HostController.c
+<<END>>
+<<BEGIN>>  <<Usb2HostControllerEnabled>>Usb2HostController.h
+<<END>>
+<<BEGIN>>  <<ScsiPassThruEnabled>>ScsiPassThru.c
+<<END>>
+<<BEGIN>>  <<ScsiPassThruEnabled>>ScsiPassThru.h
+<<END>>
+<<BEGIN>>  <<ExtScsiPassThruEnabled>>ExtScsiPassThru.c
+<<END>>
+<<BEGIN>>  <<ExtScsiPassThruEnabled>>ExtScsiPassThru.h
+<<END>>
+<<BEGIN>>  <<AtaPassThruEnabled>>AtaPassThru.c
+<<END>>
+<<BEGIN>>  <<AtaPassThruEnabled>>AtaPassThru.h
+<<END>>
+<<BEGIN>>  <<UserCredentialEnabled>>UserCredential.c
+<<END>>
+<<BEGIN>>  <<UserCredentialEnabled>>UserCredential.h
+<<END>>
+<<BEGIN>>  <<LoadFileEnabled>>LoadFile.c
+<<END>>
+<<BEGIN>>  <<LoadFileEnabled>>LoadFile.h
+<<END>>
+<<BEGIN>>  <<EdidOverrideEnabled>>EdidOverride.c
+<<END>>
+<<BEGIN>>  <<EdidOverrideEnabled>>EdidOverride.h
+<<END>>
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  MemoryAllocationLib
+  BaseMemoryLib
+  BaseLib
+  UefiLib
+  DevicePathLib
+  DebugLib
+<<BEGIN>>  <<UefiRuntimeDriverEnabled>>UefiRuntimeServicesTableLib
+<<END>>
+<<BEGIN>>  <<UefiRuntimeDriverEnabled>>UefiRuntimeLib
+<<END>>
+
+[Protocols]
+<<BEGIN>>  <<UefiDriverModelEnabled>>gEfiDriverBindingProtocolGuid
+<<END>>
+<<BEGIN>>  <<UefiDriverModelEnabled>><<ConsumedProtocol>>
+<<END>>
+<<BEGIN>>  <<DriverSupportedEfiVersionEnabled>>gEfiDriverSupportedEfiVersionProtocolGuid
+<<END>>
+<<BEGIN>>  <<HiiEnabled>>gEfiHiiPackageListProtocolGuid
+<<END>>
+<<BEGIN>>  <<HiiEnabled>>gEfiHiiDatabaseProtocolGuid
+<<END>>
+<<BEGIN>>  <<ComponentNameEnabled>>gEfiComponentName2ProtocolGuid
+<<END>>
+<<BEGIN>>  <<ComponentNameEnabled>>gEfiComponentNameProtocolGuid
+<<END>>
+<<BEGIN>>  <<DriverDiagnosticsEnabled>>gEfiDriverDiagnostics2ProtocolGuid
+<<END>>
+<<BEGIN>>  <<DriverDiagnosticsEnabled>>gEfiDriverDiagnosticsProtocolGuid
+<<END>>
+<<BEGIN>>  <<DriverConfigurationEnabled>>gEfiDriverConfiguration2ProtocolGuid
+<<END>>
+<<BEGIN>>  <<DriverConfigurationEnabled>>gEfiDriverConfigurationProtocolGuid
+<<END>>
+<<BEGIN>>  <<DriverFamilyOverrideEnabled>>gEfiDriverFamilyOverrideProtocolGuid
+<<END>>
+<<BEGIN>>  <<DriverHealthEnabled>>gEfiDriverHealthProtocolGuid
+<<END>>
+<<BEGIN>>  <<BusSpecificDriverOverrideEnabled>>gEfiBusSpecificDriverOverrideProtocolGuid
+<<END>>
+<<BEGIN>>  <<HiiConfigAccessEnabled>>gEfiHiiConfigAccessProtocolGuid
+<<END>>
+<<BEGIN>>  <<SimpleTextInputEnabled>>gEfiSimpleTextInProtocolGuid
+<<END>>
+<<BEGIN>>  <<SimpleTextInputEnabled>>gEfiSimpleTextInputExProtocolGuid
+<<END>>
+<<BEGIN>>  <<SimplePointerEnabled>>gEfiSimplePointerProtocolGuid
+<<END>>
+<<BEGIN>>  <<AbsolutePointerEnabled>>gEfiAbsolutePointerProtocolGuid
+<<END>>
+<<BEGIN>>  <<SimpleTextOutputEnabled>>gEfiSimpleTextOutProtocolGuid
+<<END>>
+<<BEGIN>>  <<SerialIoEnabled>>gEfiSerialIoProtocolGuid
+<<END>>
+<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiGraphicsOutputProtocolGuid
+<<END>>
+<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiEdidDiscoveredProtocolGuid
+<<END>>
+<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiEdidActiveProtocolGuid
+<<END>>
+<<BEGIN>>  <<BlockIoEnabled>>gEfiBlockIoProtocolGuid
+<<END>>
+<<BEGIN>>  <<BlockIoEnabled>>gEfiBlockIo2ProtocolGuid
+<<END>>
+<<BEGIN>>  <<StorageSecurityCommandEnabled>>gEfiStorageSecurityCommandProtocolGuid
+<<END>>
+<<BEGIN>>  <<NiiUndiEnabled>>gEfiNetworkInterfaceIdentifierProtocolGuid_31
+<<END>>
+<<BEGIN>>  <<SimpleNetworkEnabled>>gEfiSimpleNetworkProtocolGuid
+<<END>>
+<<BEGIN>>  <<Usb2HostControllerEnabled>>gEfiUsb2HcProtocolGuid
+<<END>>
+<<BEGIN>>  <<ScsiPassThruEnabled>>gEfiScsiPassThruProtocolGuid
+<<END>>
+<<BEGIN>>  <<ExtScsiPassThruEnabled>>gEfiExtScsiPassThruProtocolGuid
+<<END>>
+<<BEGIN>>  <<AtaPassThruEnabled>>gEfiAtaPassThruProtocolGuid
+<<END>>
+<<BEGIN>>  <<UserCredentialEnabled>>gEfiUserCredential2ProtocolGuid
+<<END>>
+<<BEGIN>>  <<LoadFileEnabled>>gEfiLoadFileProtocolGuid
+<<END>>
+<<BEGIN>>  <<EdidOverrideEnabled>>gEfiEdidOverrideProtocolGuid
+<<END>>
+
+[Guids]
+
+<<BEGIN>><<UefiRuntimeDriverEnabled>>
+[Depex]
+  gEfiBdsArchProtocolGuid               AND
+  gEfiCpuArchProtocolGuid               AND
+  gEfiMetronomeArchProtocolGuid         AND
+  gEfiMonotonicCounterArchProtocolGuid  AND
+  gEfiRealTimeClockArchProtocolGuid     AND
+  gEfiResetArchProtocolGuid             AND
+  gEfiRuntimeArchProtocolGuid           AND
+  gEfiSecurityArchProtocolGuid          AND
+  gEfiTimerArchProtocolGuid             AND
+  gEfiVariableWriteArchProtocolGuid     AND
+  gEfiVariableArchProtocolGuid          AND
+  gEfiWatchdogTimerArchProtocolGuid
+<<END>>

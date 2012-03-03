@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+## @file
+# Windows Installer XML 3.5 source file used to generate MSI for UEFI Driver Wizard
+#
+# Copyright (c) 2012, Intel Corporation. All rights reserved.<BR>
+#
+# This program and the accompanying materials are licensed and made available 
+# under the terms and conditions of the BSD License which accompanies this 
+# distribution. The full text of the license may be found at 
+# http://opensource.org/licenses/bsd-license.php
+#
+# THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
+# WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+#
+##
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Product Id="*" UpgradeCode="5ab2b953-6456-4ffb-9812-5597fffdf08e" Version="1.0.0.0" Language="1033" Name="UEFI Driver Wizard" Manufacturer="tianocore.org">
+        <Package InstallerVersion="300" Compressed="yes"/>
+        <Media Id="1" Cabinet="uefidriverwizard.cab" EmbedCab="yes" />
+
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="APPLICATIONROOTDIRECTORY" Name="UEFI Driver Wizard"/>
+            </Directory>
+            <!-- Step 1: Define the directory structure -->
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="UEFI Driver Wizard"/>
+            </Directory>
+        </Directory>
+
+        <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+            <Component Id="UefiDriverWizard.exe" Guid="193931DB-0D1E-4792-998D-4EA41D95B7D8">
+                <File Id="UefiDriverWizard.exe" Source="UefiDriverWizard.exe" KeyPath="yes" Checksum="yes"/>
+            </Component>
+        </DirectoryRef>
+
+        <!-- Step 2: Add the shortcut to your installer package -->
+        <DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="ApplicationShortcut" Guid="4E84EAD3-F04C-4c5a-BC34-36C61294EC4A">
+                <Shortcut Id="ApplicationStartMenuShortcut"                      Name="UEFI Driver Wizard"                    Description="UEFI Driver Wizard"                    Target="[APPLICATIONROOTDIRECTORY]UefiDriverWizard.exe"
+                          WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+                <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\UefiDriverWizard" Name="installed" Type="integer" Value="1" KeyPath="yes"/>           </Component>
+        </DirectoryRef>
+
+        <Feature Id="MainApplication" Title="Main Application" Level="1">
+            <ComponentRef Id="UefiDriverWizard.exe" />
+            <!-- Step 3: Tell WiX to install the shortcut -->
+            <ComponentRef Id="ApplicationShortcut" />   
+        </Feature>
+
+        <Property Id="WIXUI_INSTALLDIR" Value="APPLICATIONROOTDIRECTORY" />
+        <UI Id="WixUI_InstallDir">
+          <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+          <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+          <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+          <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+          <Property Id="WixUI_Mode" Value="InstallDir" />
+          <DialogRef Id="BrowseDlg" />
+          <DialogRef Id="DiskCostDlg" />
+          <DialogRef Id="ErrorDlg" />
+          <DialogRef Id="FatalError" />
+          <DialogRef Id="FilesInUse" />
+          <DialogRef Id="MsiRMFilesInUse" />
+          <DialogRef Id="PrepareDlg" />
+          <DialogRef Id="ProgressDlg" />
+          <DialogRef Id="ResumeDlg" />
+          <DialogRef Id="UserExit" />
+          <Publish Dialog="BrowseDlg" Control="OK" Event="DoAction" Value="WixUIValidatePath" Order="3">1</Publish>
+          <Publish Dialog="BrowseDlg" Control="OK" Event="SpawnDialog" Value="InvalidDirDlg" Order="4"><![CDATA[WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+          <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+          <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+          <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="SetTargetPath" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="DoAction" Value="WixUIValidatePath" Order="2">NOT WIXUI_DONTVALIDATEPATH</Publish>
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="SpawnDialog" Value="InvalidDirDlg" Order="3"><![CDATA[NOT WIXUI_DONTVALIDATEPATH AND WIXUI_INSTALLDIR_VALID<>"1"]]></Publish>
+          <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="4">WIXUI_DONTVALIDATEPATH OR WIXUI_INSTALLDIR_VALID="1"</Publish>
+          <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Property="_BrowseProperty" Value="[WIXUI_INSTALLDIR]" Order="1">1</Publish>
+          <Publish Dialog="InstallDirDlg" Control="ChangeFolder" Event="SpawnDialog" Value="BrowseDlg" Order="2">1</Publish>
+          <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg" Order="1">NOT Installed</Publish>
+          <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed</Publish>
+          <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+          <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+          <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+          <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+          <Property Id="ARPNOMODIFY" Value="1" />
+        </UI>
+        <UIRef Id="WixUI_Common" />
+        
+    </Product>
+</Wix>
