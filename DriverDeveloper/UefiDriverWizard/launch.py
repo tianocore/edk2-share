@@ -1,7 +1,7 @@
 ## @file
 # Main entry point and code generator for UEFI Driver Wizard
 #
-# Copyright (c) 2012, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) 2012 - 2014, Intel Corporation. All rights reserved.<BR>
 #
 # This program and the accompanying materials are licensed and made available
 # under the terms and conditions of the BSD License which accompanies this
@@ -49,9 +49,10 @@ class MyApp(wx.App):
     self.frame = frame
     self.SetTopWindow(frame)
     self.WorkspacePath = ''
-    image = wx.Image(os.path.join(os.path.abspath(sys.path[0]), 'Logo.png'), wx.BITMAP_TYPE_PNG)
-    image = image.Scale(40,40)
-    icon = wx.IconFromBitmap (image.ConvertToBitmap())
+    icon = wx.Icon(os.path.join(os.path.abspath(sys.path[0]), 'Logo.ico'), wx.BITMAP_TYPE_ICO)
+#    image = wx.Image(os.path.join(os.path.abspath(sys.path[0]), 'Logo.png'), wx.BITMAP_TYPE_PNG)
+#    image = image.Scale(40,40)
+#    icon = wx.IconFromBitmap (image.ConvertToBitmap())
     frame.SetIcon(icon)
     frame.Show(True)
     if Config.WorkspacePath <> '':
@@ -545,16 +546,16 @@ class MyApp(wx.App):
       Dictionary['ConsumedProtocol'] = ''
       Dictionary['ConsumedProtocolIncludeFile'] = ''
       if u"PCI Driver that consumes the PCI I/O Protocol" in Config.UefiDriverConsumedProtocols:
-        Dictionary['ConsumedProtocol'] = 'gEfiPciIoProtocolGuid'
+        Dictionary['ConsumedProtocol'] = 'gEfiPciIoProtocolGuid                         ## TO_START'
         Dictionary['ConsumedProtocolIncludeFile'] = 'PciIo.h'
       if u"USB Driver that consumes the USB I/O Protocol" in Config.UefiDriverConsumedProtocols:
-        Dictionary['ConsumedProtocol'] = 'gEfiUsbIoProtocolGuid'
+        Dictionary['ConsumedProtocol'] = 'gEfiUsbIoProtocolGuid                         ## TO_START'
         Dictionary['ConsumedProtocolIncludeFile'] = 'UsbIo.h'
       if u"SCSI Driver that consumes the SCSI I/O Protocol" in Config.UefiDriverConsumedProtocols:
-        Dictionary['ConsumedProtocol'] = 'gEfiScsiIoProtocolGuid'
+        Dictionary['ConsumedProtocol'] = 'gEfiScsiIoProtocolGuid                        ## TO_START'
         Dictionary['ConsumedProtocolIncludeFile'] = 'ScsiIo.h'
       if u"ATA Driver that consumes the ATA Pass Thru Protocol" in Config.UefiDriverConsumedProtocols:
-        Dictionary['ConsumedProtocol'] = 'gEfiAtaPassThruProtocolGuid'
+        Dictionary['ConsumedProtocol'] = 'gEfiAtaPassThruProtocolGuid                   ## TO_START'
         Dictionary['ConsumedProtocolIncludeFile'] = 'AtaPassThru.h'
 
       Dictionary['SimpleTextInputEnabled']        = []
@@ -615,9 +616,11 @@ class MyApp(wx.App):
       if u"Platform driver producing the EDID Override Protocol" in Config.UefiDriverProducedProtocols:
         Dictionary['EdidOverrideEnabled'] = ['']
 
-      self.ProcessTemplate('Templates/UefiDriver.inf', Dictionary, Config.UefiDriverName + '.inf')
-      self.ProcessTemplate('Templates/UefiDriver.c',   Dictionary, Config.UefiDriverName + '.c')
-      self.ProcessTemplate('Templates/UefiDriver.h',   Dictionary, Config.UefiDriverName + '.h')
+      self.ProcessTemplate('Templates/UefiDriver.inf',          Dictionary, Config.UefiDriverName + '.inf')
+      self.ProcessTemplate('Templates/UefiDriver.c',            Dictionary, Config.UefiDriverName + '.c')
+      self.ProcessTemplate('Templates/UefiDriver.h',            Dictionary, Config.UefiDriverName + '.h')
+      self.ProcessTemplate('Templates/UefiDriverExtra.uni',     Dictionary, Config.UefiDriverName + 'Extra.uni',   Encoding='utf-16')
+      self.ProcessTemplate('Templates/UefiDriverModStrs.uni',   Dictionary, Config.UefiDriverName + 'ModStrs.uni', Encoding='utf-16')
       if Dictionary['UefiDriverModelEnabled'] <> []:
         self.ProcessTemplate('Templates/DriverBinding.h', Dictionary, 'DriverBinding.h')
       if Dictionary['ComponentNameEnabled'] <> []:

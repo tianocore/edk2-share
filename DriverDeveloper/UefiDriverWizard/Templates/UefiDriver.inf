@@ -3,7 +3,7 @@
 #
 # UEFI Driver Wizard template file
 #
-# Copyright (c) 2012, Intel Corporation. All rights reserved.<BR>
+# Copyright (c) 2012 - 2014, Intel Corporation. All rights reserved.<BR>
 #
 # This program and the accompanying materials are licensed and made 
 # available under the terms and conditions of the BSD License which 
@@ -37,10 +37,14 @@
 <<END>>
   VERSION_STRING            = <<DriverVersionString>>
   ENTRY_POINT               = <<DriverName>>DriverEntryPoint
+  MODULE_UNI_FILE           = <<DriverName>>ModStrs.uni
 <<BEGIN>>  <<UnloadEnabled>>UNLOAD_IMAGE              = <<DriverName>>Unload
 <<END>>
 <<BEGIN>>  <<HiiEnabled>>UEFI_HII_RESOURCE_SECTION = TRUE
 <<END>>
+
+[UserExtensions.TianoCore."ExtraFiles"]
+  <<DriverName>>Extra.uni
 
 [Packages]
   MdePkg/MdePkg.dec
@@ -162,77 +166,77 @@
 <<END>>
 
 [Protocols]
-<<BEGIN>>  <<UefiDriverModelEnabled>>gEfiDriverBindingProtocolGuid
-<<END>>
 <<BEGIN>>  <<UefiDriverModelEnabled>><<ConsumedProtocol>>
 <<END>>
-<<BEGIN>>  <<DriverSupportedEfiVersionEnabled>>gEfiDriverSupportedEfiVersionProtocolGuid
+<<BEGIN>>  <<UefiDriverModelEnabled>>gEfiDriverBindingProtocolGuid                 ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<HiiEnabled>>gEfiHiiPackageListProtocolGuid
+<<BEGIN>>  <<DriverSupportedEfiVersionEnabled>>gEfiDriverSupportedEfiVersionProtocolGuid     ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<HiiEnabled>>gEfiHiiDatabaseProtocolGuid
+<<BEGIN>>  <<HiiEnabled>>gEfiHiiPackageListProtocolGuid                ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<ComponentNameEnabled>>gEfiComponentName2ProtocolGuid
+<<BEGIN>>  <<HiiEnabled>>gEfiHiiDatabaseProtocolGuid                   ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<ComponentNameEnabled>>gEfiComponentNameProtocolGuid
+<<BEGIN>>  <<ComponentNameEnabled>>gEfiComponentName2ProtocolGuid                ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<DriverDiagnosticsEnabled>>gEfiDriverDiagnostics2ProtocolGuid
+<<BEGIN>>  <<ComponentNameEnabled>>gEfiComponentNameProtocolGuid                 ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<DriverDiagnosticsEnabled>>gEfiDriverDiagnosticsProtocolGuid
+<<BEGIN>>  <<DriverDiagnosticsEnabled>>gEfiDriverDiagnostics2ProtocolGuid            ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<DriverConfigurationEnabled>>gEfiDriverConfiguration2ProtocolGuid
+<<BEGIN>>  <<DriverDiagnosticsEnabled>>gEfiDriverDiagnosticsProtocolGuid             ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<DriverConfigurationEnabled>>gEfiDriverConfigurationProtocolGuid
+<<BEGIN>>  <<DriverConfigurationEnabled>>gEfiDriverConfiguration2ProtocolGuid          ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<DriverFamilyOverrideEnabled>>gEfiDriverFamilyOverrideProtocolGuid
+<<BEGIN>>  <<DriverConfigurationEnabled>>gEfiDriverConfigurationProtocolGuid           ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<DriverHealthEnabled>>gEfiDriverHealthProtocolGuid
+<<BEGIN>>  <<DriverFamilyOverrideEnabled>>gEfiDriverFamilyOverrideProtocolGuid          ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<BusSpecificDriverOverrideEnabled>>gEfiBusSpecificDriverOverrideProtocolGuid
+<<BEGIN>>  <<DriverHealthEnabled>>gEfiDriverHealthProtocolGuid                  ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<HiiConfigAccessEnabled>>gEfiHiiConfigAccessProtocolGuid
+<<BEGIN>>  <<BusSpecificDriverOverrideEnabled>>gEfiBusSpecificDriverOverrideProtocolGuid     ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<SimpleTextInputEnabled>>gEfiSimpleTextInProtocolGuid
+<<BEGIN>>  <<HiiConfigAccessEnabled>>gEfiHiiConfigAccessProtocolGuid               ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<SimpleTextInputEnabled>>gEfiSimpleTextInputExProtocolGuid
+<<BEGIN>>  <<SimpleTextInputEnabled>>gEfiSimpleTextInProtocolGuid                  ## BY_START
 <<END>>
-<<BEGIN>>  <<SimplePointerEnabled>>gEfiSimplePointerProtocolGuid
+<<BEGIN>>  <<SimpleTextInputEnabled>>gEfiSimpleTextInputExProtocolGuid             ## BY_START
 <<END>>
-<<BEGIN>>  <<AbsolutePointerEnabled>>gEfiAbsolutePointerProtocolGuid
+<<BEGIN>>  <<SimplePointerEnabled>>gEfiSimplePointerProtocolGuid                 ## BY_START
 <<END>>
-<<BEGIN>>  <<SimpleTextOutputEnabled>>gEfiSimpleTextOutProtocolGuid
+<<BEGIN>>  <<AbsolutePointerEnabled>>gEfiAbsolutePointerProtocolGuid               ## BY_START
 <<END>>
-<<BEGIN>>  <<SerialIoEnabled>>gEfiSerialIoProtocolGuid
+<<BEGIN>>  <<SimpleTextOutputEnabled>>gEfiSimpleTextOutProtocolGuid                 ## BY_START
 <<END>>
-<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiGraphicsOutputProtocolGuid
+<<BEGIN>>  <<SerialIoEnabled>>gEfiSerialIoProtocolGuid                      ## BY_START
 <<END>>
-<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiEdidDiscoveredProtocolGuid
+<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiGraphicsOutputProtocolGuid                ## BY_START
 <<END>>
-<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiEdidActiveProtocolGuid
+<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiEdidDiscoveredProtocolGuid                ## BY_START
 <<END>>
-<<BEGIN>>  <<BlockIoEnabled>>gEfiBlockIoProtocolGuid
+<<BEGIN>>  <<GraphicsOutputEnabled>>gEfiEdidActiveProtocolGuid                    ## BY_START
 <<END>>
-<<BEGIN>>  <<BlockIoEnabled>>gEfiBlockIo2ProtocolGuid
+<<BEGIN>>  <<BlockIoEnabled>>gEfiBlockIoProtocolGuid                       ## BY_START
 <<END>>
-<<BEGIN>>  <<StorageSecurityCommandEnabled>>gEfiStorageSecurityCommandProtocolGuid
+<<BEGIN>>  <<BlockIoEnabled>>gEfiBlockIo2ProtocolGuid                      ## BY_START
 <<END>>
-<<BEGIN>>  <<NiiUndiEnabled>>gEfiNetworkInterfaceIdentifierProtocolGuid_31
+<<BEGIN>>  <<StorageSecurityCommandEnabled>>gEfiStorageSecurityCommandProtocolGuid        ## ALWAYS_PRODUCES
 <<END>>
-<<BEGIN>>  <<SimpleNetworkEnabled>>gEfiSimpleNetworkProtocolGuid
+<<BEGIN>>  <<NiiUndiEnabled>>gEfiNetworkInterfaceIdentifierProtocolGuid_31 ## BY_START
 <<END>>
-<<BEGIN>>  <<Usb2HostControllerEnabled>>gEfiUsb2HcProtocolGuid
+<<BEGIN>>  <<SimpleNetworkEnabled>>gEfiSimpleNetworkProtocolGuid                 ## BY_START
 <<END>>
-<<BEGIN>>  <<ScsiPassThruEnabled>>gEfiScsiPassThruProtocolGuid
+<<BEGIN>>  <<Usb2HostControllerEnabled>>gEfiUsb2HcProtocolGuid                        ## BY_START
 <<END>>
-<<BEGIN>>  <<ExtScsiPassThruEnabled>>gEfiExtScsiPassThruProtocolGuid
+<<BEGIN>>  <<ScsiPassThruEnabled>>gEfiScsiPassThruProtocolGuid                  ## BY_START
 <<END>>
-<<BEGIN>>  <<AtaPassThruEnabled>>gEfiAtaPassThruProtocolGuid
+<<BEGIN>>  <<ExtScsiPassThruEnabled>>gEfiExtScsiPassThruProtocolGuid                ## BY_START
 <<END>>
-<<BEGIN>>  <<UserCredentialEnabled>>gEfiUserCredential2ProtocolGuid
+<<BEGIN>>  <<AtaPassThruEnabled>>gEfiAtaPassThruProtocolGuid                    ## BY_START
 <<END>>
-<<BEGIN>>  <<LoadFileEnabled>>gEfiLoadFileProtocolGuid
+<<BEGIN>>  <<UserCredentialEnabled>>gEfiUserCredential2ProtocolGuid                ## BY_START
 <<END>>
-<<BEGIN>>  <<EdidOverrideEnabled>>gEfiEdidOverrideProtocolGuid
+<<BEGIN>>  <<LoadFileEnabled>>gEfiLoadFileProtocolGuid                       ## BY_START
+<<END>>
+<<BEGIN>>  <<EdidOverrideEnabled>>gEfiEdidOverrideProtocolGuid                   ## BY_START
 <<END>>
 
 [Guids]
