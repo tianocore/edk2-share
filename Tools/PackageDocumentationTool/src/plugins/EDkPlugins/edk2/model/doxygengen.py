@@ -5,9 +5,9 @@
 #
 # Copyright (c) 2011, Intel Corporation. All rights reserved.<BR>
 #
-# This program and the accompanying materials are licensed and made available 
-# under the terms and conditions of the BSD License which accompanies this 
-# distribution. The full text of the license may be found at 
+# This program and the accompanying materials are licensed and made available
+# under the terms and conditions of the BSD License which accompanies this
+# distribution. The full text of the license may be found at
 # http://opensource.org/licenses/bsd-license.php
 #
 # THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
@@ -47,9 +47,9 @@ _dec_key_description_mapping_table = {
   'PACKAGE_GUID': 'Package Guid'
 }
 class DoxygenAction:
-    """This is base class for all doxygen action. 
+    """This is base class for all doxygen action.
     """
-    
+
     def __init__(self, doxPath, chmPath, outputPath, projname, mode='html', log=None, verbose=False):
         """Constructor function.
         @param  doxPath         the obosolution path of doxygen execute file.
@@ -67,31 +67,31 @@ class DoxygenAction:
         self._verbose       = verbose
         self._doxygenCallback = None
         self._chmCallback     = None
-        
+
     def Log(self, message, level='info'):
         if self._log != None:
             self._log(message, level)
-    
+
     def IsVerbose(self):
         return self._verbose
-        
+
     def Generate(self):
         """Generate interface called by outer directly"""
         self.Log(">>>>>> Start generate doxygen document for %s... Zzz....\n" % self._projname)
-        
+
         # create doxygen config file at first
         self._configFile = doxygen.DoxygenConfigFile()
         self._configFile.SetOutputDir(self._outputPath)
-        
+
         self._configFile.SetWarningFilePath(os.path.join(self._outputPath, 'warning.txt'))
         if self._mode.lower() == 'html':
             self._configFile.SetHtmlMode()
         else:
             self._configFile.SetChmMode()
-        
+
         self.Log("    >>>>>> Initialize doxygen config file...Zzz...\n")
         self.InitializeConfigFile()
-        
+
         self.Log("    >>>>>> Generate doxygen index page file...Zzz...\n")
         indexPagePath = self.GenerateIndexPage()
         if indexPagePath == None:
@@ -99,15 +99,15 @@ class DoxygenAction:
             return False
         else:
             self.Log("Success to create doxygen index page file %s \n" % indexPagePath)
-            
+
         # Add index page doxygen file to file list.
         self._configFile.AddFile(indexPagePath)
-        
+
         # save config file to output path
         configFilePath = os.path.join(self._outputPath, self._projname + '.doxygen_config')
         self._configFile.Generate(configFilePath)
         self.Log("    <<<<<< Success Save doxygen config file to %s...\n" % configFilePath)
-        
+
         # launch doxygen tool to generate document
         if self._doxygenCallback != None:
             self.Log("    >>>>>> Start doxygen process...Zzz...\n")
@@ -116,30 +116,30 @@ class DoxygenAction:
         else:
             self.Log("Fail to create doxygen process!", 'error')
             return False
-        
+
         return True
-    
+
     def InitializeConfigFile(self):
         """Initialize config setting for doxygen project. It will be invoked after config file
            object is created. Inherited class should implement it.
         """
-        
+
     def GenerateIndexPage(self):
         """Generate doxygen index page. Inherited class should implement it."""
         return None
-    
+
     def RegisterCallbackDoxygenProcess(self, callback):
         self._doxygenCallback = callback
-        
+
     def RegisterCallbackCHMProcess(self, callback):
         self._chmCallback = callback
-        
+
 class PlatformDocumentAction(DoxygenAction):
-    """Generate platform doxygen document, will be implement at future."""    
-            
+    """Generate platform doxygen document, will be implement at future."""
+
 class PackageDocumentAction(DoxygenAction):
     """Generate package reference document"""
-    
+
     def __init__(self, doxPath, chmPath, outputPath, pObj, mode='html', log=None, arch=None, tooltag=None,
                  macros=[], onlyInclude=False, verbose=False):
         DoxygenAction.__init__(self, doxPath, chmPath, outputPath, pObj.GetName(), mode, log, verbose)
@@ -148,7 +148,7 @@ class PackageDocumentAction(DoxygenAction):
         self._tooltag = tooltag
         self._macros = macros
         self._onlyIncludeDocument = onlyInclude
-        
+
     def InitializeConfigFile(self):
         if self._arch == 'IA32':
             self._configFile.AddPreDefined('MDE_CPU_IA32')
@@ -165,12 +165,12 @@ class PackageDocumentAction(DoxygenAction):
             self._configFile.AddPreDefined('MDE_CPU_IPF')
             self._configFile.AddPreDefined('MDE_CPU_EBC')
             self._configFile.AddPreDefined('MDE_CPU_ARM')
-        
+
         for macro in self._macros:
             self._configFile.AddPreDefined(macro)
 
         namestr = self._pObj.GetName()
-        if self._arch != None: 
+        if self._arch != None:
             namestr += '[%s]' % self._arch
         if self._tooltag != None:
             namestr += '[%s]' % self._tooltag
@@ -178,7 +178,7 @@ class PackageDocumentAction(DoxygenAction):
         self._configFile.SetStripPath(self._pObj.GetWorkspace())
         self._configFile.SetProjectVersion(self._pObj.GetFileObj().GetVersion())
         self._configFile.AddPattern('*.decdoxygen')
-            
+
         if self._tooltag.lower() == 'msft':
             self._configFile.AddPreDefined('_MSC_EXTENSIONS')
         elif self._tooltag.lower() == 'gnu':
@@ -190,18 +190,18 @@ class PackageDocumentAction(DoxygenAction):
             self._configFile.AddPreDefined('_MSC_EXTENSIONS')
             self._configFile.AddPreDefined('__GNUC__')
             self._configFile.AddPreDefined('__INTEL_COMPILER')
-        
+
         self._configFile.AddPreDefined('ASM_PFX= ')
         self._configFile.AddPreDefined('OPTIONAL= ')
-       
+
     def GenerateIndexPage(self):
         """Generate doxygen index page. Inherited class should implement it."""
         fObj   = self._pObj.GetFileObj()
-        pdObj  = doxygen.DoxygenFile('%s Package Document' % self._pObj.GetName(), 
+        pdObj  = doxygen.DoxygenFile('%s Package Document' % self._pObj.GetName(),
                                      '%s.decdoxygen' % self._pObj.GetFilename())
         self._configFile.AddFile(pdObj.GetFilename())
         pdObj.AddDescription(fObj.GetFileHeader())
-        
+
         defSection = fObj.GetSectionByName('defines')[0]
         baseSection = doxygen.Section('PackageBasicInformation', 'Package Basic Information')
         descr = '<TABLE>'
@@ -214,13 +214,13 @@ class PackageDocumentAction(DoxygenAction):
         descr += '</TABLE><br>'
         baseSection.AddDescription(descr)
         pdObj.AddSection(baseSection)
-        
+
         knownIssueSection = doxygen.Section('Known_Issue_section', 'Known Issue')
         knownIssueSection.AddDescription('<ul>')
         knownIssueSection.AddDescription('<li> OPTIONAL macro for function parameter can not be dealed with doxygen, so it disapear in this document! </li>')
         knownIssueSection.AddDescription('</ul>')
         pdObj.AddSection(knownIssueSection)
-        
+
         self.AddAllIncludeFiles(self._pObj, self._configFile)
         pages = self.GenerateIncludesSubPage(self._pObj, self._configFile)
         if len(pages) != 0:
@@ -241,10 +241,10 @@ class PackageDocumentAction(DoxygenAction):
         if len(pages) != 0:
             pdObj.AddPages(pages)
         if not self._onlyIncludeDocument:
-            pdObj.AddPages(self.GenerateModulePages(self._pObj, self._configFile)) 
-    
+            pdObj.AddPages(self.GenerateModulePages(self._pObj, self._configFile))
+
         pdObj.Save()
-        return pdObj.GetFilename()                  
+        return pdObj.GetFilename()
 
     def GenerateIncludesSubPage(self, pObj, configFile):
         # by default add following path as include path to config file
@@ -255,24 +255,24 @@ class PackageDocumentAction(DoxygenAction):
         configFile.AddIncludePath(os.path.join(pkpath, 'Include', 'Ppi'))
         configFile.AddIncludePath(os.path.join(pkpath, 'Include', 'Guid'))
         configFile.AddIncludePath(os.path.join(pkpath, 'Include', 'IndustryStandard'))
-        
+
         rootArray = []
         pageRoot = doxygen.Page("Public Includes", "%s_public_includes" % pObj.GetName())
         objs = pObj.GetFileObj().GetSectionObjectsByName('includes')
         if len(objs) == 0: return []
-        
+
         for obj in objs:
             # Add path to include path
             path = os.path.join(pObj.GetFileObj().GetPackageRootPath(), obj.GetPath())
             configFile.AddIncludePath(path)
-            
+
             # only list common folder's include file
             if obj.GetArch().lower() != 'common':
                 continue
-            
+
             bNeedAddIncludePage = False
             topPage = doxygen.Page(self._ConvertPathToDoxygen(path, pObj), 'public_include_top')
-            
+
             topPage.AddDescription('<ul>\n')
             for file in os.listdir(path):
                 if file.lower() in _ignore_dir: continue
@@ -299,28 +299,28 @@ class PackageDocumentAction(DoxygenAction):
             topPage.AddDescription('</ul>\n')
             if bNeedAddIncludePage:
                 pageRoot.AddPage(topPage)
-        
+
         if pageRoot.GetSubpageCount() != 0:
             return [pageRoot]
         else:
             return []
-         
+
     def GenerateLibraryClassesSubPage(self, pObj, configFile):
         """
-        Generate sub page for library class for package. 
+        Generate sub page for library class for package.
         One DEC file maybe contains many library class sections
         for different architecture.
-        
-        @param  fObj DEC file object. 
+
+        @param  fObj DEC file object.
         """
-        rootArray = []    
+        rootArray = []
         pageRoot = doxygen.Page("Library Class", "%s_libraryclass" % pObj.GetName())
         objs = pObj.GetFileObj().GetSectionObjectsByName('libraryclass', self._arch)
         if len(objs) == 0: return []
-        
+
         if self._arch != None:
             for obj in objs:
-                classPage = doxygen.Page(obj.GetClassName(), 
+                classPage = doxygen.Page(obj.GetClassName(),
                                          "lc_%s" % obj.GetClassName())
                 comments = obj.GetComment()
                 if len(comments) != 0:
@@ -334,17 +334,17 @@ class PackageDocumentAction(DoxygenAction):
                 section.AddDescription('\link %s\n' % obj.GetHeaderFile())
                 section.AddDescription(' \endlink<p>\n')
                 classPage.AddSection(section)
-                fullPath = os.path.join(pObj.GetFileObj().GetPackageRootPath(), obj.GetHeaderFile())      
+                fullPath = os.path.join(pObj.GetFileObj().GetPackageRootPath(), obj.GetHeaderFile())
                 self.ProcessSourceFileForInclude(fullPath, pObj, configFile)
         else:
             archPageDict = {}
             for obj in objs:
                 if obj.GetArch() not in archPageDict.keys():
-                    archPageDict[obj.GetArch()] = doxygen.Page(obj.GetArch(), 
+                    archPageDict[obj.GetArch()] = doxygen.Page(obj.GetArch(),
                                                                'lc_%s' % obj.GetArch())
                     pageRoot.AddPage(archPageDict[obj.GetArch()])
                 subArchRoot = archPageDict[obj.GetArch()]
-                classPage = doxygen.Page(obj.GetClassName(), 
+                classPage = doxygen.Page(obj.GetClassName(),
                                          "lc_%s" % obj.GetClassName())
                 comments = obj.GetComment()
                 if len(comments) != 0:
@@ -358,11 +358,11 @@ class PackageDocumentAction(DoxygenAction):
                 section.AddDescription('\link %s\n' % obj.GetHeaderFile())
                 section.AddDescription(' \endlink<p>\n')
                 classPage.AddSection(section)
-                fullPath = os.path.join(pObj.GetFileObj().GetPackageRootPath(), obj.GetHeaderFile())     
-                 
+                fullPath = os.path.join(pObj.GetFileObj().GetPackageRootPath(), obj.GetHeaderFile())
+
                 self.ProcessSourceFileForInclude(fullPath, pObj, configFile)
-        rootArray.append(pageRoot) 
-        return rootArray      
+        rootArray.append(pageRoot)
+        return rootArray
 
     def ProcessSourceFileForInclude(self, path, pObj, configFile, infObj=None):
         """
@@ -375,22 +375,22 @@ class PackageDocumentAction(DoxygenAction):
         if not os.path.exists(path):
             ErrorMsg('Source file path %s does not exist!' % path)
             return
-        
+
         if configFile.FileExists(path):
             return
-        
+
         try:
             f = open(path, 'r')
             lines = f.readlines()
             f.close()
         except IOError:
             ErrorMsg('Fail to open file %s' % path)
-            return 
-        
+            return
+
         configFile.AddFile(path)
-        
+
         no = 0
-        for no in xrange(len(lines)):
+        for no in range(len(lines)):
             if len(lines[no].strip()) == 0:
                 continue
             if lines[no].strip()[:2] in ['##', '//', '/*', '*/']:
@@ -402,10 +402,10 @@ class PackageDocumentAction(DoxygenAction):
                 continue
             mo = re.match(r"^[#\w\s]+[<\"]([\\/\w.]+)[>\"]$", lines[no].strip())
             filePath = mo.groups()[0]
-            
+
             if filePath == None or len(filePath) == 0:
                 continue
-            
+
             # find header file in module's path firstly.
             fullPath = None
 
@@ -436,10 +436,10 @@ class PackageDocumentAction(DoxygenAction):
                             incPath = os.path.join(decObj.GetPackageRootPath(), incObj.GetPath()).replace('\\', '/')
                             if os.path.exists(os.path.join(incPath, filePath)):
                                 fullPath = os.path.join(os.path.join(incPath, filePath))
-                                break  
+                                break
                         if fullPath != None:
-                            break                  
-                    
+                            break
+
             if fullPath == None and self.IsVerbose():
                 self.Log('Can not resolve header file %s for file %s in package %s\n' % (filePath, path, pObj.GetFileObj().GetFilename()), 'error')
                 return
@@ -448,8 +448,8 @@ class PackageDocumentAction(DoxygenAction):
                 if self.IsVerbose():
                     self.Log('Preprocessing: Add include file %s for file %s\n' % (fullPath, path))
                 #LogMsg ('Preprocessing: Add include file %s for file %s' % (fullPath, path))
-                self.ProcessSourceFileForInclude(fullPath, pObj, configFile, infObj) 
-           
+                self.ProcessSourceFileForInclude(fullPath, pObj, configFile, infObj)
+
     def AddAllIncludeFiles(self, pObj, configFile):
         objs = pObj.GetFileObj().GetSectionObjectsByName('includes')
         for obj in objs:
@@ -461,7 +461,7 @@ class PackageDocumentAction(DoxygenAction):
                 for file in files:
                     path = os.path.normpath(os.path.join(root, file))
                     configFile.AddFile(path.replace('/', '\\'))
-                    
+
     def GeneratePcdSubPages(self, pObj, configFile):
         """
         Generate sub pages for package's PCD definition.
@@ -472,7 +472,7 @@ class PackageDocumentAction(DoxygenAction):
         objs = pObj.GetFileObj().GetSectionObjectsByName('pcd')
         if len(objs) == 0:
             return []
-            
+
         pcdRootPage = doxygen.Page('PCD', 'pcd_root_page')
         typeRootPageDict = {}
         typeArchRootPageDict = {}
@@ -500,7 +500,7 @@ class PackageDocumentAction(DoxygenAction):
                 desc += '<TD><CAPTION>%s</CAPTION></TD>' % obj.GetPcdToken()
                 desc += '<TD><CAPTION>%s</CAPTION></TD>' % obj.GetPcdDataType()
                 desc += '<TD><CAPTION>%s</CAPTION></TD>' % obj.GetPcdValue()
-                desc += '</TR>'                
+                desc += '</TR>'
                 desc += '</TABLE>'
                 section.AddDescription(desc)
                 pcdPage.AddSection(section)
@@ -530,12 +530,12 @@ class PackageDocumentAction(DoxygenAction):
                 desc += '<TD><CAPTION>%s</CAPTION></TD>' % obj.GetPcdToken()
                 desc += '<TD><CAPTION>%s</CAPTION></TD>' % obj.GetPcdDataType()
                 desc += '<TD><CAPTION>%s</CAPTION></TD>' % obj.GetPcdValue()
-                desc += '</TR>'                
+                desc += '</TR>'
                 desc += '</TABLE>'
                 section.AddDescription(desc)
                 pcdPage.AddSection(section)
-                typeArchRoot.AddPage(pcdPage)   
-        return [pcdRootPage]             
+                typeArchRoot.AddPage(pcdPage)
+        return [pcdRootPage]
 
     def _GenerateGuidSubPage(self, pObj, obj, configFile):
         guidPage = doxygen.Page('%s' % obj.GetName(),
@@ -554,26 +554,26 @@ class PackageDocumentAction(DoxygenAction):
         desc += '</TR>'
         desc += '</TABLE>'
         section.AddDescription(desc)
-        guidPage.AddSection(section)                
+        guidPage.AddSection(section)
         refFile = self.FindHeaderFileForGuid(pObj, obj.GetName(), configFile)
         if refFile:
             relPath = refFile[len(pObj.GetWorkspace()) + 1:]
             if len(comments) == 0:
                 guidPage.AddDescription(' \\copydoc %s <br>' % relPath)
-    
+
             section = doxygen.Section('ref', 'Refer to Header File')
             section.AddDescription('\link %s\n' % relPath)
             section.AddDescription('\endlink\n')
             self.ProcessSourceFileForInclude(refFile, pObj, configFile)
             guidPage.AddSection(section)
         return guidPage
-        
+
     def GenerateGuidSubPages(self, pObj, configFile):
         """
         Generate sub pages for package's GUID definition.
         @param  pObj            package object
         @param  configFilf      doxygen config file object
-        """    
+        """
         pageRoot = doxygen.Page('GUID', 'guid_root_page')
         objs = pObj.GetFileObj().GetSectionObjectsByName('guids', self._arch)
         if len(objs) == 0: return []
@@ -590,7 +590,7 @@ class PackageDocumentAction(DoxygenAction):
                 guidArchRoot = guidArchRootPageDict[obj.GetArch()]
                 guidArchRoot.AddPage(self._GenerateGuidSubPage(pObj, obj, configFile))
         return [pageRoot]
-    
+
     def _GeneratePpiSubPage(self, pObj, obj, configFile):
         guidPage = doxygen.Page(obj.GetName(), 'ppi_page_%s' % obj.GetName())
         comments = obj.GetComment()
@@ -601,7 +601,7 @@ class PackageDocumentAction(DoxygenAction):
         desc += '<TR>'
         desc += '<TD><CAPTION>PPI\'s Guid Name</CAPTION></TD><TD><CAPTION>PPI\'s Guid</CAPTION></TD>'
         desc += '</TR>'
-        desc += '<TR>'                
+        desc += '<TR>'
         desc += '<TD>%s</TD>' % obj.GetName()
         desc += '<TD>%s</TD>' % obj.GetGuid()
         desc += '</TR>'
@@ -612,21 +612,21 @@ class PackageDocumentAction(DoxygenAction):
         if refFile:
             relPath = refFile[len(pObj.GetWorkspace()) + 1:]
             if len(comments) == 0:
-                guidPage.AddDescription(' \\copydoc %s <br>' % relPath)                
+                guidPage.AddDescription(' \\copydoc %s <br>' % relPath)
             section = doxygen.Section('ref', 'Refer to Header File')
             section.AddDescription('\link %s\n' % relPath)
             section.AddDescription('\endlink\n')
             self.ProcessSourceFileForInclude(refFile, pObj, configFile)
             guidPage.AddSection(section)
-    
+
         return guidPage
-        
+
     def GeneratePpiSubPages(self, pObj, configFile):
         """
         Generate sub pages for package's GUID definition.
         @param  pObj            package object
         @param  configFilf      doxygen config file object
-        """    
+        """
         pageRoot = doxygen.Page('PPI', 'ppi_root_page')
         objs = pObj.GetFileObj().GetSectionObjectsByName('ppis', self._arch)
         if len(objs) == 0: return []
@@ -642,7 +642,7 @@ class PackageDocumentAction(DoxygenAction):
                     guidArchRootPageDict[obj.GetArch()] = guidArchRoot
                 guidArchRoot = guidArchRootPageDict[obj.GetArch()]
                 guidArchRoot.AddPage(self._GeneratePpiSubPage(pObj, obj, configFile))
-        return [pageRoot]        
+        return [pageRoot]
 
     def _GenerateProtocolSubPage(self, pObj, obj, configFile):
         guidPage = doxygen.Page(obj.GetName(), 'protocol_page_%s' % obj.GetName())
@@ -654,33 +654,33 @@ class PackageDocumentAction(DoxygenAction):
         desc += '<TR>'
         desc += '<TD><CAPTION>PROTOCOL\'s Guid Name</CAPTION></TD><TD><CAPTION>PROTOCOL\'s Guid</CAPTION></TD>'
         desc += '</TR>'
-        desc += '<TR>'                
+        desc += '<TR>'
         desc += '<TD>%s</TD>' % obj.GetName()
         desc += '<TD>%s</TD>' % obj.GetGuid()
         desc += '</TR>'
         desc += '</TABLE>'
         section.AddDescription(desc)
         guidPage.AddSection(section)
-        
+
         refFile = self.FindHeaderFileForGuid(pObj, obj.GetName(), configFile)
         if refFile:
             relPath = refFile[len(pObj.GetWorkspace()) + 1:]
             if len(comments) == 0:
-                guidPage.AddDescription(' \\copydoc %s <br>' % relPath)                
+                guidPage.AddDescription(' \\copydoc %s <br>' % relPath)
             section = doxygen.Section('ref', 'Refer to Header File')
             section.AddDescription('\link %s\n' % relPath)
             section.AddDescription('\endlink\n')
             self.ProcessSourceFileForInclude(refFile, pObj, configFile)
             guidPage.AddSection(section)
-    
+
         return guidPage
-        
+
     def GenerateProtocolSubPages(self, pObj, configFile):
         """
         Generate sub pages for package's GUID definition.
         @param  pObj            package object
         @param  configFilf      doxygen config file object
-        """    
+        """
         pageRoot = doxygen.Page('PROTOCOL', 'protocol_root_page')
         objs = pObj.GetFileObj().GetSectionObjectsByName('protocols', self._arch)
         if len(objs) == 0: return []
@@ -696,16 +696,16 @@ class PackageDocumentAction(DoxygenAction):
                     guidArchRootPageDict[obj.GetArch()] = guidArchRoot
                 guidArchRoot = guidArchRootPageDict[obj.GetArch()]
                 guidArchRoot.AddPage(self._GenerateProtocolSubPage(pObj, obj, configFile))
-        return [pageRoot]            
-    
+        return [pageRoot]
+
     def FindHeaderFileForGuid(self, pObj, name, configFile):
         """
         For declaration header file for GUID/PPI/Protocol.
-        
+
         @param pObj         package object
         @param name         guid/ppi/protocol's name
         @param configFile   config file object
-        
+
         @return full path of header file and None if not found.
         """
         startPath  = pObj.GetFileObj().GetPackageRootPath()
@@ -713,7 +713,7 @@ class PackageDocumentAction(DoxygenAction):
         # if <PackagePath>/include exist, then search header under it.
         if os.path.exists(incPath):
             startPath = incPath
-            
+
         for root, dirs, files in os.walk(startPath):
             for dir in dirs:
                 if dir.lower() in _ignore_dir:
@@ -733,8 +733,8 @@ class PackageDocumentAction(DoxygenAction):
                     if line.find(name) != -1 and \
                        line.find('extern') != -1:
                         return fPath.replace('\\', '/')
-        return None                      
-        
+        return None
+
     def GetPackageModuleList(self, pObj):
         """
         Get all module's INF path under package's root path
@@ -754,22 +754,22 @@ class PackageDocumentAction(DoxygenAction):
                     fPath = os.path.join(root, file).replace('\\', '/')
                     mArray.append(fPath)
         return mArray
-            
+
     def GenerateModulePages(self, pObj, configFile):
         """
         Generate sub pages for package's module which is under the package
         root directory.
-        
+
         @param  pObj            package object
         @param  configFilf      doxygen config file object
         """
-        infList = self.GetPackageModuleList(pObj) 
-        rootPages = [] 
+        infList = self.GetPackageModuleList(pObj)
+        rootPages = []
         libObjs = []
         modObjs = []
         for infpath in infList:
             infObj = inf.INFFile(infpath)
-            #infObj = INFFileObject.INFFile (pObj.GetWorkspacePath(), 
+            #infObj = INFFileObject.INFFile (pObj.GetWorkspacePath(),
             #                                inf)
             if not infObj:
                 self.Log('Fail create INF object for %s' % inf)
@@ -781,28 +781,28 @@ class PackageDocumentAction(DoxygenAction):
                 libObjs.append(infObj)
             else:
                 modObjs.append(infObj)
-        
+
         if len(libObjs) != 0:
             libRootPage = doxygen.Page('Libraries', 'lib_root_page')
             rootPages.append(libRootPage)
             for libInf in libObjs:
                 libRootPage.AddPage(self.GenerateModulePage(pObj, libInf, configFile, True))
-                
+
         if len(modObjs) != 0:
             modRootPage = doxygen.Page('Modules', 'module_root_page')
             rootPages.append(modRootPage)
             for modInf in modObjs:
                 modRootPage.AddPage(self.GenerateModulePage(pObj, modInf, configFile, False))
-                    
+
         return rootPages
 
     def GenerateModulePage(self, pObj, infObj, configFile, isLib):
         """
-        Generate page for a module/library. 
+        Generate page for a module/library.
         @param infObj     INF file object for module/library
         @param configFile doxygen config file object
         @param isLib      Whether this module is libary
-        
+
         @param module doxygen page object
         """
         workspace = pObj.GetWorkspace()
@@ -816,11 +816,11 @@ class PackageDocumentAction(DoxygenAction):
                 ErrorMsg ('Fail to load package object for %s' % obj.GetPackageName())
                 continue
             refDecObjs.append(decObj)
-        
+
         modPage = doxygen.Page('%s' % infObj.GetBaseName(),
                                'module_%s' % infObj.GetBaseName())
         modPage.AddDescription(infObj.GetFileHeader())
-        
+
         basicInfSection = doxygen.Section('BasicModuleInformation', 'Basic Module Information')
         desc = "<TABLE>"
         for obj in infObj.GetSectionObjectsByName('defines'):
@@ -833,9 +833,9 @@ class PackageDocumentAction(DoxygenAction):
                 desc += '<TD><B>%s</B></TD>' % _inf_key_description_mapping_table[key]
                 desc += '<TD>%s</TD>' % clsname
                 desc += '</TR>'
-                
+
                 desc += '<TR>'
-                desc += '<TD><B>Supported Module Types</B></TD>' 
+                desc += '<TD><B>Supported Module Types</B></TD>'
                 desc += '<TD>%s</TD>' % types
                 desc += '</TR>'
             else:
@@ -862,12 +862,12 @@ class PackageDocumentAction(DoxygenAction):
                 desc += '<TD>%s</TD>' % item.split('.')[1]
                 desc += '<TD>%s</TD>' % item.split('.')[0]
                 pkgbasename = self.SearchPcdPackage(item, workspace, refDecObjs)
-                desc += '<TD>%s</TD>' % pkgbasename 
+                desc += '<TD>%s</TD>' % pkgbasename
                 desc += '</TR>'
-            desc += "</TABLE>"            
+            desc += "</TABLE>"
             s.AddDescription(desc)
             modPage.AddSection(s)
-                
+
         # Add protocol section
         #sects = infObj.GetSectionByString('protocol')
         data  = []
@@ -882,12 +882,12 @@ class PackageDocumentAction(DoxygenAction):
                 desc += '<TR>'
                 desc += '<TD>%s</TD>' % item
                 pkgbasename = self.SearchProtocolPackage(item, workspace, refDecObjs)
-                desc += '<TD>%s</TD>' % pkgbasename 
+                desc += '<TD>%s</TD>' % pkgbasename
                 desc += '</TR>'
             desc += "</TABLE>"
             s.AddDescription(desc)
             modPage.AddSection(s)
-    
+
         # Add ppi section
         #sects = infObj.GetSectionByString('ppi')
         data  = []
@@ -902,12 +902,12 @@ class PackageDocumentAction(DoxygenAction):
                 desc += '<TR>'
                 desc += '<TD>%s</TD>' % item
                 pkgbasename = self.SearchPpiPackage(item, workspace, refDecObjs)
-                desc += '<TD>%s</TD>' % pkgbasename 
+                desc += '<TD>%s</TD>' % pkgbasename
                 desc += '</TR>'
-            desc += "</TABLE>"            
+            desc += "</TABLE>"
             s.AddDescription(desc)
             modPage.AddSection(s)
-    
+
         # Add guid section
         #sects = infObj.GetSectionByString('guid')
         data  = []
@@ -922,12 +922,12 @@ class PackageDocumentAction(DoxygenAction):
                 desc += '<TR>'
                 desc += '<TD>%s</TD>' % item
                 pkgbasename = self.SearchGuidPackage(item, workspace, refDecObjs)
-                desc += '<TD>%s</TD>' % pkgbasename 
+                desc += '<TD>%s</TD>' % pkgbasename
                 desc += '</TR>'
-            desc += "</TABLE>"                 
+            desc += "</TABLE>"
             s.AddDescription(desc)
             modPage.AddSection(s)
-            
+
         section = doxygen.Section('LibraryClasses', 'Library Classes')
         desc = "<TABLE>"
         desc += '<TR><TD><B>Name</B></TD><TD><B>Type</B></TD><TD><B>Package</B></TD><TD><B>Header File</B></TD></TR>'
@@ -968,7 +968,7 @@ class PackageDocumentAction(DoxygenAction):
         desc += "</TABLE>"
         section.AddDescription(desc)
         modPage.AddSection(section)
-        
+
         section = doxygen.Section('SourceFiles', 'Source Files')
         section.AddDescription('<ul>\n')
         for obj in infObj.GetSourceObjects(self._arch, self._tooltag):
@@ -980,12 +980,12 @@ class PackageDocumentAction(DoxygenAction):
                 newPath = newPath[len(pObj.GetWorkspace()) + 1:]
                 section.AddDescription('<li> \link %s \endlink </li>' %  newPath)
             else:
-                self.ProcessSourceFileForInclude(sPath, pObj, configFile, infObj)   
-                sPath = sPath[len(pObj.GetWorkspace()) + 1:]  
+                self.ProcessSourceFileForInclude(sPath, pObj, configFile, infObj)
+                sPath = sPath[len(pObj.GetWorkspace()) + 1:]
                 section.AddDescription('<li>\link %s \endlink </li>' % sPath)
         section.AddDescription('</ul>\n')
         modPage.AddSection(section)
-        
+
         #sects = infObj.GetSectionByString('depex')
         data  = []
         #for sect in sects:
@@ -995,22 +995,22 @@ class PackageDocumentAction(DoxygenAction):
             s = doxygen.Section('DependentSection', 'Module Dependencies')
             s.AddDescription('<br>'.join(data))
             modPage.AddSection(s)
-                    
+
         return modPage
 
     def TranslateUniFile(self, path):
         newpath = path + '.dox'
         #import core.textfile as textfile
         #file = textfile.TextFile(path)
-        
+
         try:
             file = open(path, 'rb')
-        except (IOError, OSError), msg:
+        except IOError or OSError:
             return None
-        
+
         t = file.read()
         file.close()
-        
+
         output = '/** @file \n'
         #output = '<html><body>'
         arr = t.split('\r\n')
@@ -1028,43 +1028,43 @@ class PackageDocumentAction(DoxygenAction):
                     continue
             output += '%s<br>\n' % line
         output += '**/'
-        
+
         if os.path.exists(newpath):
             os.remove(newpath)
-        
+
         file = open(newpath, "w")
         file.write(output)
         file.close()
         return newpath
-         
+
     def SearchPcdPackage(self, pcdname, workspace, decObjs):
         for decObj in  decObjs:
             for pcd in decObj.GetSectionObjectsByName('pcd'):
                 if pcdname == pcd.GetPcdName():
                     return decObj.GetBaseName()
         return None
-           
+
     def SearchProtocolPackage(self, protname, workspace, decObjs):
         for decObj in  decObjs:
             for proto in decObj.GetSectionObjectsByName('protocol'):
                 if protname == proto.GetName():
                     return decObj.GetBaseName()
         return None
-                    
+
     def SearchPpiPackage(self, ppiname, workspace, decObjs):
         for decObj in  decObjs:
             for ppi in decObj.GetSectionObjectsByName('ppi'):
                 if ppiname == ppi.GetName():
                     return decObj.GetBaseName()
         return None
-        
+
     def SearchGuidPackage(self, guidname, workspace, decObjs):
         for decObj in  decObjs:
             for guid in decObj.GetSectionObjectsByName('guid'):
                 if guidname == guid.GetName():
                     return decObj.GetBaseName()
         return None
-                
+
     def SearchLibraryClassHeaderFile(self, className, workspace, decObjs):
         for decObj in  decObjs:
             for cls in decObj.GetSectionObjectsByName('libraryclasses'):
@@ -1073,21 +1073,21 @@ class PackageDocumentAction(DoxygenAction):
                     path = os.path.join(decObj.GetPackageRootPath(), path)
                     path = path[len(workspace) + 1:]
                     return decObj.GetBaseName(), path.replace('\\', '/')
-                
+
         return None
 
     def _ConvertPathToDoxygen(self, path, pObj):
         pRootPath = pObj.GetWorkspace()
         path = path[len(pRootPath) + 1:]
         return path.replace('\\', '/')
-    
+
 def IsCHeaderFile(path):
-    return CheckPathPostfix(path, 'h')   
-    
+    return CheckPathPostfix(path, 'h')
+
 def CheckPathPostfix(path, str):
     index = path.rfind('.')
     if index == -1:
         return False
     if path[index + 1:].lower() == str.lower():
         return True
-    return False         
+    return False

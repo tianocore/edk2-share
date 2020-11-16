@@ -40,10 +40,10 @@ import UefiDriverWizardUefiDriverModelProducedProtocols
 class UefiDriverWizardNewUefiDriver( UefiDriverWizard.NewUefiDriver ):
   def __init__( self, parent ):
     UefiDriverWizard.NewUefiDriver.__init__( self, parent )
-    if Config.UefiDriverPath <> '':
+    if Config.UefiDriverPath:
       self.UefiDriverPath.SetPath(Config.UefiDriverPath + os.path.sep)
     else:
-      if Config.PackagePath <> '':
+      if Config.PackagePath:
         self.UefiDriverPath.SetPath(Config.PackagePath + os.path.sep)
       else:
         self.UefiDriverPath.SetPath(Config.WorkspacePath + os.path.sep)
