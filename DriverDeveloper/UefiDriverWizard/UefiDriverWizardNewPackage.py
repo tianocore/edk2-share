@@ -40,7 +40,7 @@ import UefiDriverWizardUefiDriverModelProducedProtocols
 class UefiDriverWizardNewPackage( UefiDriverWizard.NewPackage ):
   def __init__( self, parent ):
     UefiDriverWizard.NewPackage.__init__( self, parent )
-    if (Config.PackagePath <> ''):
+    if (Config.PackagePath):
       self.PackagePath.SetPath(Config.PackagePath + os.path.sep)
     else:
       self.PackagePath.SetPath(Config.WorkspacePath + os.path.sep)

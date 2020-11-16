@@ -55,7 +55,7 @@ class MyApp(wx.App):
 #    icon = wx.IconFromBitmap (image.ConvertToBitmap())
     frame.SetIcon(icon)
     frame.Show(True)
-    if Config.WorkspacePath <> '':
+    if Config.WorkspacePath:
       frame.LogMessageWindow.AppendText('\nWORKSPACE %s selected\n' % (Config.WorkspacePath))
     return True
 
@@ -109,9 +109,9 @@ class MyApp(wx.App):
       TemplateFile = codecs.open (os.path.join(sys.path[0], TemplateFileName), encoding=Encoding)
     Contents.Append(TemplateFile.read().replace('<<','${').replace('>>','}'), Dictionary)
     TemplateFile.close()
-    if OutputFileName <> None:
+    if OutputFileName:
       self.frame.LogMessageWindow.AppendText('  Create file %s\n' % (os.path.abspath(OutputFileName)))
-      if Encoding == None:
+      if not Encoding:
         File = open (OutputFileName, 'w')
       else:
         File = codecs.open (OutputFileName, 'w', encoding=Encoding)
@@ -407,7 +407,7 @@ class MyApp(wx.App):
       Path = os.path.normcase(os.path.abspath(Config.UefiDriverPath)).replace(os.path.normcase(os.path.abspath(os.curdir)), '')
       UefiDriverPath = Config.UefiDriverPath[-len(Path):].replace('\\','/').strip('/')
       Path = os.path.abspath(Config.UefiDriverPath)
-      while Path <> '':
+      while Path:
         DscFileList = glob.glob(os.path.join(Path, '*.dsc'))
         if DscFileList == []:
           if Path == os.path.dirname(Path):
@@ -460,7 +460,7 @@ class MyApp(wx.App):
       if u"UEFI Driver Model Hybrid Driver" in Config.UefiDriverType:
         Dictionary['UefiDriverModelEnabled'] = ['']
         Dictionary['UefiDriverModelBusDriverEnabled'] = ['']
-      if Dictionary['UefiDriverModelEnabled'] <> []:
+      if Dictionary['UefiDriverModelEnabled']:
         Dictionary['DriverBindingVersion'] = Config.DriverBindingVersion
 
       Dictionary['DriverSupportedEfiVersionEnabled']        = []
@@ -482,7 +482,7 @@ class MyApp(wx.App):
         Dictionary['ComponentNameEnabled'] = ['']
       if u"Component Name Protocol" in Config.UefiDriverDriverModelFeatures:
         Dictionary['ComponentNameEnabled'] = ['']
-      if Dictionary['ComponentNameEnabled'] <> []:
+      if Dictionary['ComponentNameEnabled']:
         Dictionary['Iso639SupportedLanguages'] = [Config.Iso639LanguageCodes]
         Dictionary['Rfc4646SupportedLanguages'] = [Config.Rfc4646LanguageCodes]
 
@@ -491,7 +491,7 @@ class MyApp(wx.App):
         Dictionary['DriverDiagnosticsEnabled'] = ['']
       if u"Driver Diagnostics Protocol" in Config.UefiDriverDriverModelFeatures:
         Dictionary['DriverDiagnosticsEnabled'] = ['']
-      if Dictionary['DriverDiagnosticsEnabled'] <> []:
+      if Dictionary['DriverDiagnosticsEnabled']:
         Dictionary['Iso639SupportedLanguages'] = [Config.Iso639LanguageCodes]
         Dictionary['Rfc4646SupportedLanguages'] = [Config.Rfc4646LanguageCodes]
 
@@ -500,7 +500,7 @@ class MyApp(wx.App):
         Dictionary['DriverConfigurationEnabled'] = ['']
       if u"Driver Configuration Protocol" in Config.UefiDriverDriverModelFeatures:
         Dictionary['DriverConfigurationEnabled'] = ['']
-      if Dictionary['DriverConfigurationEnabled'] <> []:
+      if Dictionary['DriverConfigurationEnabled']:
         Dictionary['Iso639SupportedLanguages'] = [Config.Iso639LanguageCodes]
         Dictionary['Rfc4646SupportedLanguages'] = [Config.Rfc4646LanguageCodes]
 
@@ -512,21 +512,21 @@ class MyApp(wx.App):
       Dictionary['EfiLibInstallAllDriverProtocols2_001'] = []
       Dictionary['EfiLibInstallAllDriverProtocols2_010'] = []
       Dictionary['EfiLibInstallAllDriverProtocols2_011'] = []
-      if Dictionary['UefiDriverModelEnabled'] <> []:
-        if Dictionary['DriverDiagnosticsEnabled'] <> [] or Dictionary['DriverConfigurationEnabled'] <> []:
-          if Dictionary['ComponentNameEnabled'] <> [] and Dictionary['DriverConfigurationEnabled'] <> [] and Dictionary['DriverDiagnosticsEnabled'] <> []:
+      if Dictionary['UefiDriverModelEnabled']:
+        if Dictionary['DriverDiagnosticsEnabled'] or Dictionary['DriverConfigurationEnabled']:
+          if Dictionary['ComponentNameEnabled'] and Dictionary['DriverConfigurationEnabled'] and Dictionary['DriverDiagnosticsEnabled']:
             Dictionary['EfiLibInstallAllDriverProtocols2_111'] = ['']
-          if Dictionary['ComponentNameEnabled'] <> [] and Dictionary['DriverConfigurationEnabled'] <> [] and Dictionary['DriverDiagnosticsEnabled'] == []:
+          if Dictionary['ComponentNameEnabled'] and Dictionary['DriverConfigurationEnabled'] and Dictionary['DriverDiagnosticsEnabled'] == []:
             Dictionary['EfiLibInstallAllDriverProtocols2_110'] = ['']
-          if Dictionary['ComponentNameEnabled'] <> [] and Dictionary['DriverConfigurationEnabled'] == [] and Dictionary['DriverDiagnosticsEnabled'] <> []:
+          if Dictionary['ComponentNameEnabled'] and Dictionary['DriverConfigurationEnabled'] == [] and Dictionary['DriverDiagnosticsEnabled']:
             Dictionary['EfiLibInstallAllDriverProtocols2_101'] = ['']
-          if Dictionary['ComponentNameEnabled'] == [] and Dictionary['DriverConfigurationEnabled'] == [] and Dictionary['DriverDiagnosticsEnabled'] <> []:
+          if Dictionary['ComponentNameEnabled'] == [] and Dictionary['DriverConfigurationEnabled'] == [] and Dictionary['DriverDiagnosticsEnabled']:
             Dictionary['EfiLibInstallAllDriverProtocols2_001'] = ['']
-          if Dictionary['ComponentNameEnabled'] == [] and Dictionary['DriverConfigurationEnabled'] <> [] and Dictionary['DriverDiagnosticsEnabled'] == []:
+          if Dictionary['ComponentNameEnabled'] == [] and Dictionary['DriverConfigurationEnabled'] and Dictionary['DriverDiagnosticsEnabled'] == []:
             Dictionary['EfiLibInstallAllDriverProtocols2_010'] = ['']
-          if Dictionary['ComponentNameEnabled'] == [] and Dictionary['DriverConfigurationEnabled'] <> [] and Dictionary['DriverDiagnosticsEnabled'] <> []:
+          if Dictionary['ComponentNameEnabled'] == [] and Dictionary['DriverConfigurationEnabled'] and Dictionary['DriverDiagnosticsEnabled']:
             Dictionary['EfiLibInstallAllDriverProtocols2_011'] = ['']
-        elif Dictionary['ComponentNameEnabled'] <> []:
+        elif Dictionary['ComponentNameEnabled']:
           Dictionary['EfiLibInstallDriverBindingComponentName2'] = ['']
         else:
           Dictionary['EfiLibInstallDriverBinding'] = ['']
@@ -621,80 +621,80 @@ class MyApp(wx.App):
       self.ProcessTemplate('Templates/UefiDriver.h',            Dictionary, Config.UefiDriverName + '.h')
       self.ProcessTemplate('Templates/UefiDriverExtra.uni',     Dictionary, Config.UefiDriverName + 'Extra.uni',   Encoding='utf-16')
       self.ProcessTemplate('Templates/UefiDriverModStrs.uni',   Dictionary, Config.UefiDriverName + 'ModStrs.uni', Encoding='utf-16')
-      if Dictionary['UefiDriverModelEnabled'] <> []:
+      if Dictionary['UefiDriverModelEnabled']:
         self.ProcessTemplate('Templates/DriverBinding.h', Dictionary, 'DriverBinding.h')
-      if Dictionary['ComponentNameEnabled'] <> []:
+      if Dictionary['ComponentNameEnabled']:
         self.ProcessTemplate('Templates/ComponentName.c', Dictionary, 'ComponentName.c')
         self.ProcessTemplate('Templates/ComponentName.h', Dictionary, 'ComponentName.h')
-      if Dictionary['DriverDiagnosticsEnabled'] <> []:
+      if Dictionary['DriverDiagnosticsEnabled']:
         self.ProcessTemplate('Templates/DriverDiagnostics.c', Dictionary, 'DriverDiagnostics.c')
         self.ProcessTemplate('Templates/DriverDiagnostics.h', Dictionary, 'DriverDiagnostics.h')
-      if Dictionary['DriverConfigurationEnabled'] <> []:
+      if Dictionary['DriverConfigurationEnabled']:
         self.ProcessTemplate('Templates/DriverConfiguration.c', Dictionary, 'DriverConfiguration.c')
         self.ProcessTemplate('Templates/DriverConfiguration.h', Dictionary, 'DriverConfiguration.h')
-      if Dictionary['DriverFamilyOverrideEnabled'] <> []:
+      if Dictionary['DriverFamilyOverrideEnabled']:
         self.ProcessTemplate('Templates/DriverFamilyOverride.c', Dictionary, 'DriverFamilyOverride.c')
         self.ProcessTemplate('Templates/DriverFamilyOverride.h', Dictionary, 'DriverFamilyOverride.h')
-      if Dictionary['DriverHealthEnabled'] <> []:
+      if Dictionary['DriverHealthEnabled']:
         self.ProcessTemplate('Templates/DriverHealth.c', Dictionary, 'DriverHealth.c')
         self.ProcessTemplate('Templates/DriverHealth.h', Dictionary, 'DriverHealth.h')
-      if Dictionary['BusSpecificDriverOverrideEnabled'] <> []:
+      if Dictionary['BusSpecificDriverOverrideEnabled']:
         self.ProcessTemplate('Templates/BusSpecificDriverOverride.c', Dictionary, 'BusSpecificDriverOverride.c')
         self.ProcessTemplate('Templates/BusSpecificDriverOverride.h', Dictionary, 'BusSpecificDriverOverride.h')
-      if Dictionary['HiiEnabled'] <> []:
+      if Dictionary['HiiEnabled']:
         self.ProcessTemplate('Templates/UefiDriver.uni',   Dictionary, Config.UefiDriverName + '.uni', Encoding='utf-16')
-      if Dictionary['HiiConfigAccessEnabled'] <> []:
+      if Dictionary['HiiConfigAccessEnabled']:
         self.ProcessTemplate('Templates/UefiDriver.vfr',    Dictionary, Config.UefiDriverName + '.vfr')
         self.ProcessTemplate('Templates/HiiConfigAccess.c', Dictionary, 'HiiConfigAccess.c')
         self.ProcessTemplate('Templates/HiiConfigAccess.h', Dictionary, 'HiiConfigAccess.h')
-      if Dictionary['SimpleTextInputEnabled']    <> []:
+      if Dictionary['SimpleTextInputEnabled']:
         self.ProcessTemplate('Templates/SimpleTextInput.c', Dictionary, 'SimpleTextInput.c')
         self.ProcessTemplate('Templates/SimpleTextInput.h', Dictionary, 'SimpleTextInput.h')
-      if Dictionary['SimplePointerEnabled']      <> []:
+      if Dictionary['SimplePointerEnabled']:
         self.ProcessTemplate('Templates/SimplePointer.c', Dictionary, 'SimplePointer.c')
         self.ProcessTemplate('Templates/SimplePointer.h', Dictionary, 'SimplePointer.h')
-      if Dictionary['AbsolutePointerEnabled']    <> []:
+      if Dictionary['AbsolutePointerEnabled']:
         self.ProcessTemplate('Templates/AbsolutePointer.c', Dictionary, 'AbsolutePointer.c')
         self.ProcessTemplate('Templates/AbsolutePointer.h', Dictionary, 'AbsolutePointer.h')
-      if Dictionary['SimpleTextOutputEnabled']   <> []:
+      if Dictionary['SimpleTextOutputEnabled']:
         self.ProcessTemplate('Templates/SimpleTextOutput.c', Dictionary, 'SimpleTextOutput.c')
         self.ProcessTemplate('Templates/SimpleTextOutput.h', Dictionary, 'SimpleTextOutput.h')
-      if Dictionary['SerialIoEnabled']   <> []:
+      if Dictionary['SerialIoEnabled']:
         self.ProcessTemplate('Templates/SerialIo.c', Dictionary, 'SerialIo.c')
         self.ProcessTemplate('Templates/SerialIo.h', Dictionary, 'SerialIo.h')
-      if Dictionary['GraphicsOutputEnabled']     <> []:
+      if Dictionary['GraphicsOutputEnabled']:
         self.ProcessTemplate('Templates/GraphicsOutput.c', Dictionary, 'GraphicsOutput.c')
         self.ProcessTemplate('Templates/GraphicsOutput.h', Dictionary, 'GraphicsOutput.h')
-      if Dictionary['BlockIoEnabled']            <> []:
+      if Dictionary['BlockIoEnabled']:
         self.ProcessTemplate('Templates/BlockIo.c', Dictionary, 'BlockIo.c')
         self.ProcessTemplate('Templates/BlockIo.h', Dictionary, 'BlockIo.h')
-      if Dictionary['StorageSecurityCommandEnabled']            <> []:
+      if Dictionary['StorageSecurityCommandEnabled']:
         self.ProcessTemplate('Templates/StorageSecurityCommand.c', Dictionary, 'StorageSecurityCommand.c')
         self.ProcessTemplate('Templates/StorageSecurityCommand.h', Dictionary, 'StorageSecurityCommand.h')
-      if Dictionary['NiiUndiEnabled']            <> []:
+      if Dictionary['NiiUndiEnabled']:
         self.ProcessTemplate('Templates/NiiUndi.c', Dictionary, 'NiiUndi.c')
-      if Dictionary['SimpleNetworkEnabled']      <> []:
+      if Dictionary['SimpleNetworkEnabled']:
         self.ProcessTemplate('Templates/SimpleNetwork.c', Dictionary, 'SimpleNetwork.c')
         self.ProcessTemplate('Templates/SimpleNetwork.h', Dictionary, 'SimpleNetwork.h')
-      if Dictionary['Usb2HostControllerEnabled'] <> []:
+      if Dictionary['Usb2HostControllerEnabled']:
         self.ProcessTemplate('Templates/Usb2HostController.c', Dictionary, 'Usb2HostController.c')
         self.ProcessTemplate('Templates/Usb2HostController.h', Dictionary, 'Usb2HostController.h')
-      if Dictionary['ScsiPassThruEnabled']    <> []:
+      if Dictionary['ScsiPassThruEnabled']:
         self.ProcessTemplate('Templates/ScsiPassThru.c', Dictionary, 'ScsiPassThru.c')
         self.ProcessTemplate('Templates/ScsiPassThru.h', Dictionary, 'ScsiPassThru.h')
-      if Dictionary['ExtScsiPassThruEnabled']    <> []:
+      if Dictionary['ExtScsiPassThruEnabled']:
         self.ProcessTemplate('Templates/ExtScsiPassThru.c', Dictionary, 'ExtScsiPassThru.c')
         self.ProcessTemplate('Templates/ExtScsiPassThru.h', Dictionary, 'ExtScsiPassThru.h')
-      if Dictionary['AtaPassThruEnabled']        <> []:
+      if Dictionary['AtaPassThruEnabled']:
         self.ProcessTemplate('Templates/AtaPassThru.c', Dictionary, 'AtaPassThru.c')
         self.ProcessTemplate('Templates/AtaPassThru.h', Dictionary, 'AtaPassThru.h')
-      if Dictionary['UserCredentialEnabled']     <> []:
+      if Dictionary['UserCredentialEnabled']:
         self.ProcessTemplate('Templates/UserCredential.c', Dictionary, 'UserCredential.c')
         self.ProcessTemplate('Templates/UserCredential.h', Dictionary, 'UserCredential.h')
-      if Dictionary['LoadFileEnabled']           <> []:
+      if Dictionary['LoadFileEnabled']:
         self.ProcessTemplate('Templates/LoadFile.c', Dictionary, 'LoadFile.c')
         self.ProcessTemplate('Templates/LoadFile.h', Dictionary, 'LoadFile.h')
-      if Dictionary['EdidOverrideEnabled']     <> []:
+      if Dictionary['EdidOverrideEnabled']:
         self.ProcessTemplate('Templates/EdidOverride.c', Dictionary, 'EdidOverride.c')
         self.ProcessTemplate('Templates/EdidOverride.h', Dictionary, 'EdidOverride.h')
 
@@ -835,4 +835,4 @@ if __name__ == '__main__':
     #
     main (False)
   except:
-    print "Unexpected error in UEFI Driver Wizard"
+    print("Unexpected error in UEFI Driver Wizard")
